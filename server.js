@@ -1,17 +1,18 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 dotenv.config();
 
 import connectDB from "./config/db.js";
 connectDB();
 
-import corsOptions from "./config/cors.js";
+import getCorsOptions from "./config/cors.js";
 import rsvpRoutes from "./routes/rsvp.js";
 
 const app = express();
 
-app.use(cors(corsOptions));
+app.use(cors(getCorsOptions()));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -19,7 +20,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.send("OK");
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  
+  if (mongoose.connection.readyState === 1) {
+    res.status(200).json({ status: 'OK', database: dbStatus });
+  } else {
+    res.status(503).json({ status: 'Service Unavailable', database: dbStatus });
+  }
 });
 
 app.use('/rsvp', rsvpRoutes);

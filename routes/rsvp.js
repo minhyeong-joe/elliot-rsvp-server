@@ -5,6 +5,7 @@ import { createMessage } from '../controllers/messageController.js';
 const router = express.Router();
 
 router.post('/', async (req, res) => {
+    console.log('Received RSVP:', req.body);
     const { message, anonymous, ...attendeeData } = req.body;
     try {
         const newAttendee = await createAttendee(attendeeData);

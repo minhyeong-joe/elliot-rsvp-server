@@ -1,7 +1,7 @@
-const corsOptions = {
+const getCorsOptions = () => ({
     origin: process.env.ALLOWED_HOST || '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-};
+});
 
-export default corsOptions;
+export default getCorsOptions;
